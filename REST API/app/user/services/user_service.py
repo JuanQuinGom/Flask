@@ -1,17 +1,17 @@
 import uuid
 import datetime
-#from app import flask_bcrypt
-from flask_bcrypt import Bcrypt
+from app import flask_bcrypt
 from app import db
 from app.user.models.user import User
 import sys
-from flask import jsonify
+from flask import jsonify, current_app, request
 
 
 
 def save_new_user(data):
     user = User.query.filter_by(email=data['email']).first()
     if not user:
+        current_app.logger.info('Creando nuevo producto')
         new_user = User(
             public_id=str(uuid.uuid4()),
             email=data['email'],
@@ -19,13 +19,15 @@ def save_new_user(data):
             password_hash=flask_bcrypt.generate_password_hash(data['password_hash']).decode('utf-8'),
             registered_on=datetime.datetime.utcnow()
         )
-        save_changes(new_user)
+        #save_changes(new_user)
         response_object = {
             'status': 'success',
             'message': 'Successfully registered.',
-            'password': flask_bcrypt.generate_password_hash(data['password_hash']).decode('utf-8')
+            'password': new_user.password_hash
         }
-        return response_object, 201
+        current_app.logger.debug('Generando token')
+        return generate_token(new_user)
+        #return response_object, 201
     else:
         response_object = {
             'status': 'fail',
@@ -35,10 +37,25 @@ def save_new_user(data):
 
 
 def get_all_users():
+    """
+    current_app.logger.info('Metodo')
+    current_app.logger.info(request.method)
+    current_app.logger.info('Ruta')
+    current_app.logger.info(request.path)
+    current_app.logger.info('headers')
+    """
+    #current_app.logger.info(request.mimetype)
+    current_app.logger.info(request.content_type)
+    #current_app.logger.info(request.args)
+    #current_app.logger.info(request.json)
+    #current_app.logger.info(request.headers)
+
     return User.query.all()
 
 
 def get_a_user(public_id):
+    current_app.logger.info(request.path)
+    current_app.logger.info(request.headers)
     return User.query.filter_by(public_id=public_id).first()
 
 def delete_a_user(public_id):
@@ -94,11 +111,14 @@ def delete_changes(data):
 def generate_token(user):
     try:
         # generate the auth token
-        auth_token = User.encode_auth_token(user.id)
+        #current_app.logger.debug(user.public_id)
+        auth_token = User.encode_auth_token(user.public_id)
+        #current_app.logger.debug(auth_token)
         response_object = {
             'status': 'success',
             'message': 'Successfully registered.',
-            'Authorization': auth_token.decode()
+            'Authorization': auth_token,
+            #'password': user.password_hash
         }
         return response_object, 201
     except Exception as e:

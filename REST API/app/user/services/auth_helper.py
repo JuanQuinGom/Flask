@@ -1,7 +1,8 @@
 from app.user.models.user import User
 from ..services.blacklist_service import save_token
-
-
+from flask import current_app
+import jwt
+import json
 class Auth:
 
     @staticmethod
@@ -15,7 +16,7 @@ class Auth:
                     response_object = {
                         'status': 'success',
                         'message': 'Successfully logged in.',
-                        'Authorization': auth_token
+                        'Authorization': auth_token.decode()
                     }
                     return response_object, 200
             else:
@@ -37,10 +38,11 @@ class Auth:
     @staticmethod
     def logout_user(data):
         if data:
-            auth_token = data.split(" ")[1]
+            auth_token = data
         else:
             auth_token = ''
         if auth_token:
+            current_app.logger.debug(auth_token)
             resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
                 # mark the token as blacklisted

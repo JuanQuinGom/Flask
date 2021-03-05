@@ -1,5 +1,5 @@
-from flask import request, Blueprint
-from flask_restplus import Resource
+from flask import request, Blueprint, current_app
+from flask_restx import Resource
 
 
 from ..util.dto import ProductDto
@@ -60,4 +60,4 @@ class Product(Resource):
     def put(self, public_id):
         """modify a product via its id"""
         data = request.json
-        return modify_products(data = data, public_id= public_id)
+        return modify_product(data = data, public_id= public_id)

@@ -3,18 +3,20 @@ import datetime
 from app import db
 from ..models.modelsProduct import Product
 import sys
-from flask import jsonify
+from flask import jsonify, current_app
 
 
 
 def save_new_product(data):
-    product = Product.query.filter_by(email=data['email']).first()
+    current_app.logger.info('Verificando...')
+    product = Product.query.filter_by(product_name=data['product_name']).first()
     if not product:
+        current_app.logger.info('Creando nuevo producto')
         new_product = Product(
             public_id=str(uuid.uuid4()),
             product_name = data['product_name'],
             product_description = data['product_description'],
-            product_price = data['product_price'],
+            product_price = int(data['product_price']),
             registered_on=datetime.datetime.utcnow()
         )
         save_changes(new_product)
@@ -24,6 +26,7 @@ def save_new_product(data):
         }
         return response_object, 201
     else:
+        current_app.logger.info('Producto existente')
         response_object = {
             'status': 'fail',
             'message': 'Product already exists.',
@@ -61,7 +64,7 @@ def modify_product(data, public_id):
             public_id=str(product.public_id),
             product_name = data['product_name'],
             product_description = data['product_description'],
-            product_price = data['product_price'],
+            product_price = int(data['product_price']),
             registered_on=datetime.datetime.utcnow()
         )
         delete_changes(product)

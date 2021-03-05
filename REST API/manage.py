@@ -10,7 +10,7 @@ from app.user.models import blacklist
 from app import create_app, db
 
 app = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')
-app.register_blueprint(blueprint)
+app.register_blueprint(blueprint, url_prefix='/')
 #api.register_blueprint(product_module)
 
 app.app_context().push()

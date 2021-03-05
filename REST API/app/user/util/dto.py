@@ -1,4 +1,4 @@
-from flask_restplus import Namespace, fields
+from flask_restx import Namespace, fields
 
 
 class UserDto:
@@ -16,4 +16,10 @@ class AuthDto:
     user_auth = api.model('auth_details', {
         'email': fields.String(required=True, description='The email address'),
         'password': fields.String(required=True, description='The user password '),
+    })
+
+class TokenDto:
+    api = Namespace('token', description='Authentication related operations')
+    token_auth = api.model('auth_details', {
+        'token': fields.String(required=True, description='The user password '),
     })

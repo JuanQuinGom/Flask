@@ -3,7 +3,7 @@ import datetime
 import jwt
 from app.user.models.blacklist import BlacklistToken
 from app.config import key
-
+from flask import current_app
 class User(db.Model):
     """ User Model for storing user related details """
     __tablename__ = "user"
@@ -50,7 +50,6 @@ class User(db.Model):
             except Exception as e:
                 return e
 
-    @staticmethod  
     def decode_auth_token(auth_token):
         """
         Decodes the auth token
@@ -58,7 +57,9 @@ class User(db.Model):
         :return: integer|string
         """
         try:
+            current_app.logger.debug(key)
             payload = jwt.decode(auth_token, key)
+            current_app.logger.debug(payload['sub'])
             is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
             if is_blacklisted_token:
                 return 'Token blacklisted. Please log in again.'

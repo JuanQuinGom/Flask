@@ -1,12 +1,12 @@
-from flask import request
-from flask_restplus import Resource
+from flask import request, current_app
+from flask_restx import Resource
 
 from app.user.services.auth_helper import Auth
-from ..util.dto import AuthDto
+from ..util.dto import AuthDto, TokenDto
 
 api = AuthDto.api
 user_auth = AuthDto.user_auth
-
+token_auth = TokenDto.token_auth
 
 @api.route('/login')
 class UserLogin(Resource):
@@ -32,4 +32,5 @@ class LogoutAPI(Resource):
         """Logout option (testing)"""
         # get auth token
         auth_header = request.headers.get('Authorization')
+        current_app.logger.debug(auth_header)
         return Auth.logout_user(data=auth_header)
