@@ -9,6 +9,7 @@ class Auth:
     def login_user(data):
         try:
             # fetch the user data
+            current_app.logger.info(data.get('email'))
             user = User.query.filter_by(email=data.get('email')).first()
             if user and user.check_password(data.get('password')):
                 auth_token = User.encode_auth_token(user.id)

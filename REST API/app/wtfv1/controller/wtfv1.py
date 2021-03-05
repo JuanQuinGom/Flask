@@ -3,7 +3,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 from app import db
 
 from ..forms.forms import SignupForm
-
+from app.user.services.auth_helper import Auth
 from flask_restx import Api
 
 bp_wtfv1 = Blueprint('wtfv1', __name__)
@@ -38,10 +38,14 @@ def show_signup_form():
 @bp_wtfv1.route("/signup/", methods=["GET", "POST"])
 def show_signupv2_form():
     form = SignupForm()
-    if form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
-        password = form.password.data
-        current_app.logger.debug(email)
-        return redirect(url_for('wtfv1.index'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            data = request.form
+            Auth.login_user(data)
+            name = form.name.data
+            email = form.email.data
+            password = form.password.data
+            current_app.logger.info(email)
+            return redirect(url_for('wtfv1.index'))
     return render_template("admin/signup_form.html", form=form)
+
