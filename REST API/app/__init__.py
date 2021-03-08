@@ -76,7 +76,7 @@ def configure_logging(app):
                                (app.config['MAIL_USERNAME'],
                                 app.config['MAIL_PASSWORD']),
                                ())
-    mail_handler.setLevel(logging.ERROR)
+    mail_handler.setLevel(logging.DEBUG)
     mail_handler.setFormatter(mail_handler_formatter())
     handlers.append(mail_handler)
 
