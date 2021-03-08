@@ -35,7 +35,9 @@ class User(Resource):
         """get a user given its identifier"""
         user = get_a_user(public_id)
         if not user:
+            raise BadRequest('Custom message')
             api.abort(404)
+
         else:
             return user
     def delete(self, public_id):

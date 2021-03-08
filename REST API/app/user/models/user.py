@@ -37,6 +37,7 @@ class User(db.Model):
             :return: string
             """
             try:
+                current_app.logger.info(user_id)
                 payload = {
                     'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
                     'iat': datetime.datetime.utcnow(),

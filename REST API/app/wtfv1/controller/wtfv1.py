@@ -45,7 +45,13 @@ def show_signupv2_form():
             name = form.name.data
             email = form.email.data
             password = form.password.data
-            current_app.logger.info(email)
-            return redirect(url_for('wtfv1.index'))
+            current_app.logger.info(password)
+            answer =Auth.login_user(request.form)
+            current_app.logger.info(answer[1])
+            if answer ==200:
+                return redirect(url_for('wtfv1.index'))
+            else:
+                current_app.logger.info(answer[0])
+                return render_template("admin/signup_form.html", form=form)
     return render_template("admin/signup_form.html", form=form)
 

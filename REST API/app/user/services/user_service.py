@@ -5,13 +5,17 @@ from app import db
 from app.user.models.user import User
 import sys
 from flask import jsonify, current_app, request
+import logging
 
+loggerUser = logging.getLogger(__name__)
 
 
 def save_new_user(data):
     user = User.query.filter_by(email=data['email']).first()
     if not user:
         current_app.logger.info('Creando nuevo producto')
+        loggerUser.info('Probando el loger del usuairo')
+        
         new_user = User(
             public_id=str(uuid.uuid4()),
             email=data['email'],
@@ -19,7 +23,7 @@ def save_new_user(data):
             password_hash=flask_bcrypt.generate_password_hash(data['password_hash']).decode('utf-8'),
             registered_on=datetime.datetime.utcnow()
         )
-        #save_changes(new_user)
+        save_changes(new_user)
         response_object = {
             'status': 'success',
             'message': 'Successfully registered.',
