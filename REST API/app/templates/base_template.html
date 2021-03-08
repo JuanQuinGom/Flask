@@ -5,6 +5,29 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for("static", filename="base.css") }}">
 </head>
+<div class="hamburger-menu">
+  <button class="burger" data-state="closed">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</div>
+<nav data-state="closed">
+  <ul>
+  <li>
+    <a href="{{ url_for('wtfv1.index') }}">Home</a>
+  </li>
+  <li>
+    <a href="#">Services</a>
+  </li>
+  <li>
+    <a href="#">About</a>
+  </li>
+  <li>
+    <a href="#">Contact</a>
+  </li>
+  </ul>
+</nav>
 <body>
 {% block content %}{% endblock %}
 </body>

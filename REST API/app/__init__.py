@@ -22,8 +22,11 @@ def create_app(config_name):
     app.register_blueprint(auth_module, url_prefix='/auth2')
     app.register_blueprint(wtf_module, url_prefix='/wtf/1/')
 
+    ##Logger functionalities
     configure_logging(app)
+    #logging.basicConfig(filename = 'Register.log', level=logging.DEBUG)
 
+    ##Error handlers
     @app.errorhandler(404)
     def not_found_error(error):
         return render_template('404.html'), 404
